@@ -7,8 +7,11 @@ RUN adduser --disabled-password --gecos '' martin
 WORKDIR /home/martin
 USER martin
 ENV GOPATH /home/martin
+
 RUN git clone https://github.com/steeve/libtorrent-go.git /home/martin/src/github.com/steeve/libtorrent-go
 RUN cd src/github.com/steeve/libtorrent-go && make
+
+RUN go get code.google.com/p/gcfg
 
 ENV PATH ${PATH}:/home/martin/bin
 WORKDIR /home/martin/src/github.com/martintrojer/mtorrent-go

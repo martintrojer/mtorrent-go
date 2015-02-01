@@ -4,6 +4,7 @@ import "fmt"
 
 func main() {
 	fmt.Println("Hello")
-	Init();
+	Init()
+	GetConfig()
 	fmt.Println("Bye")
 }
