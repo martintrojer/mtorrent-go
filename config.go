@@ -13,14 +13,15 @@ type Config struct {
 	}
 	Torrent struct {
 		ListenPorts []int `gcfg:"listen"`
+		DhtPort int `gcfg:"dht-port"`
+		DhtRouters []string `gcfg:"dht-router"`
+
+		UploadLimit float32 `gcfg:"upload-limit"`
+		DownloadLimit float32 `gcfg:"download-limit"`
 		MaxConnections int `gcfg:"max-connections"`
 		MaxUploads int `gcfg:"max-uploads"`
 		Ratio float32
-		UploadLimit float32 `gcfg:"upload-limit"`
-		DownloadLimit float32 `gcfg:"download-limit"`
 		ResolveCountries bool `gcfg:"resolve-countries"`
-		DhtPort int `gcfg:"dht-port"`
-		DhtRouters []string `gcfg:"dht-router"`
 	}
 }
 

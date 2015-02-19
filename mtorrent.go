@@ -1,10 +1,14 @@
 package main
 
-import "fmt"
+import (
+	"log"
+)
 
 func main() {
-	fmt.Println("Hello")
-	Init()
-	GetConfig()
-	fmt.Println("Bye")
+  err, cfg := GetConfig()
+	if err == nil {
+		log.Printf("mtorrent startin on port %d\n", cfg.Mtorrent.UiPort)
+		StartSession(cfg)
+		StopSession(cfg)
+	}
 }
