@@ -3,9 +3,11 @@ package main
 import (
 	"os"
 	"log"
+	"strings"
 	"regexp"
 	"bytes"
 	"github.com/steeve/libtorrent-go"
+	"github.com/dustin/go-humanize"
 )
 
 type Instance struct {
@@ -23,7 +25,7 @@ func AddMagnet(uri string) {
 	r, _ := regexp.Compile("[a-fA-F0-9]{40}")
 	if (! r.MatchString(uri)) { return }
 
-	infoHash := r.FindStringSubmatch(uri)[0]
+	infoHash := strings.ToLower(r.FindStringSubmatch(uri)[0])
 
 	_, present := instance.handles[infoHash]
 
@@ -73,6 +75,71 @@ func ResumeTorrent(infoHash string) {
 		handle.Resume()
 		log.Println("Torrent paused: " + infoHash)
 	}
+}
+
+type TorrentStatus struct {
+	name string
+	hash string
+	size string
+	state string
+	progress float32
+	downRate string
+	upRate string
+	seeds int
+	seedsTotal int
+	peers int
+	peersTotal int
+	isPaused bool
+}
+
+func toHex(hash []byte)string {
+	hexChars := []string {"0","1","2","3","4","5","6","7","8","9","a","b","c","d","e","f",}
+	res := ""
+	for _, ch := range hash {
+		res += hexChars[ch >> 4]
+		res += hexChars[ch & 0xf]
+	}
+	return res
+}
+
+func GetTorrentStatus() []TorrentStatus{
+	handlesVec := instance.session.Get_torrents()
+	vecSize := int(handlesVec.Size())
+	res := make([]TorrentStatus, vecSize)
+
+	states := []string {
+		"queued for checking",
+		"checking files",
+		"downloading metadata",
+		"downloading",
+		"finished",
+		"seeding",
+		"allocating",
+		"checking resume data",
+	}
+
+	for i := 0; i < vecSize; i++ {
+		st := handlesVec.Get(i).Status()
+
+		var ts TorrentStatus
+		ts.name = st.GetName()
+		ts.hash = toHex([]byte(st.GetInfo_hash().To_string()))
+		ts.size = humanize.Bytes(uint64(st.GetTotal_wanted()))
+		ts.state = states[st.GetState()]
+		ts.progress = 100.0 * st.GetProgress()
+		ts.downRate = humanize.Bytes(uint64(st.GetDownload_rate()))
+		ts.upRate = humanize.Bytes(uint64(st.GetUpload_rate()))
+		ts.seeds = st.GetNum_seeds()
+		ts.seedsTotal = st.GetList_seeds()
+		ts.peers = st.GetNum_peers()
+		ts.peersTotal = st.GetList_peers()
+		ts.isPaused = st.GetPaused()
+
+		res[i] = ts
+
+	}
+
+	return res
 }
 
 // ---------------------------------------------------------------

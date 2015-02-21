@@ -12,6 +12,7 @@ RUN git clone https://github.com/steeve/libtorrent-go.git /home/martin/src/githu
 RUN cd src/github.com/steeve/libtorrent-go && make
 
 RUN go get code.google.com/p/gcfg
+RUN go get github.com/dustin/go-humanize
 
 ENV PATH ${PATH}:/home/martin/bin
 WORKDIR /home/martin/src/github.com/martintrojer/mtorrent-go
