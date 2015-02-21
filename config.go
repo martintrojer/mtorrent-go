@@ -16,12 +16,10 @@ type Config struct {
 		DhtPort int `gcfg:"dht-port"`
 		DhtRouters []string `gcfg:"dht-router"`
 
-		UploadLimit float32 `gcfg:"upload-limit"`
-		DownloadLimit float32 `gcfg:"download-limit"`
+		UploadLimit int `gcfg:"upload-limit"`
+		DownloadLimit int `gcfg:"download-limit"`
 		MaxConnections int `gcfg:"max-connections"`
 		MaxUploads int `gcfg:"max-uploads"`
-		Ratio float32
-		ResolveCountries bool `gcfg:"resolve-countries"`
 	}
 }
 

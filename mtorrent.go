@@ -9,6 +9,6 @@ func main() {
 	if err == nil {
 		log.Printf("mtorrent startin on port %d\n", cfg.Mtorrent.UiPort)
 		StartSession(cfg)
-		StopSession(cfg)
+		StopSession()
 	}
 }
