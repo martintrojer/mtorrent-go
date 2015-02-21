@@ -3,7 +3,6 @@ package main
 import (
 	"os"
 	"log"
-	"strings"
 	"regexp"
 	"bytes"
 	"github.com/steeve/libtorrent-go"
@@ -19,18 +18,6 @@ var instance = Instance{}
 
 // ---------------------------------------------------------------
 // Torrents
-
-func getMagnetFileName(infoHash string)string {
-	return instance.config.Mtorrent.WatchPath + "/" + strings.ToLower(infoHash) + ".magnet"
-}
-
-func createMagnetRestartFile(uri string, infoHash string) {
-	fo, err := os.Create(getMagnetFileName(infoHash))
-	if (err != nil) { return }
-	defer fo.Close()
-
-	fo.Write([]byte(uri))
-}
 
 func AddMagnet(uri string) {
 	r, _ := regexp.Compile("[a-fA-F0-9]{40}")
@@ -50,6 +37,7 @@ func AddMagnet(uri string) {
 	params.SetSave_path(instance.config.Mtorrent.SavePath)
 
 	handle := instance.session.Add_torrent(params)
+	instance.handles[infoHash] = handle
 
 	handle.Set_max_connections(instance.config.Torrent.MaxConnections)
 	handle.Set_max_uploads(instance.config.Torrent.MaxUploads)
@@ -57,16 +45,12 @@ func AddMagnet(uri string) {
 	handle.Set_download_limit(instance.config.Torrent.DownloadLimit)
 	handle.Auto_managed(true)
 
-	instance.handles[infoHash] = handle
-	createMagnetRestartFile(uri, infoHash)
-
 	log.Println("Magnet added: " + infoHash)
 }
 
 func RemoveTorrent(infoHash string) {
 	handle, present := instance.handles[infoHash]
 	if (present) {
-		os.Remove(getMagnetFileName(infoHash))
 		instance.session.Remove_torrent(handle)
 		delete(instance.handles, infoHash)
 		log.Println("Torrent removed: " + infoHash)
@@ -90,8 +74,6 @@ func ResumeTorrent(infoHash string) {
 		log.Println("Torrent paused: " + infoHash)
 	}
 }
-
-
 
 // ---------------------------------------------------------------
 // Session
@@ -182,13 +164,10 @@ func StartSession(cfg Config) {
 	s.Listen_on(libtorrent.NewStd_pair_int_int(ports[0], ports[1]), error)
 
 	configureSession()
-
 	startServices()
-
 }
 
 func StopSession() {
 	stopServices()
-
 	saveSessionState()
 }
