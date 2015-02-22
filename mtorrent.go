@@ -1,19 +1,22 @@
 package main
 
-import (
-	"log"
-	"time"
+import(
+	"os"
+	"os/signal"
+	"syscall"
 )
 
 func main() {
-  err, cfg := GetConfig()
-	if err == nil {
-		log.Printf("mtorrent startin on port %d\n", cfg.Mtorrent.UiPort)
+	if err, cfg := GetConfig(); err == nil {
+		sigc := make(chan os.Signal, 1)
+		signal.Notify(sigc, os.Interrupt, syscall.SIGTERM)
+		go func() {
+			<-sigc
+			StopSession()
+			os.Exit(0)
+		}()
+
 		StartSession(cfg)
-		for i:=0; i < 10; i++ {
-			log.Println(GetTorrentStatus())
-			time.Sleep(time.Second)
-		}
-		StopSession()
+		StartWebServer(cfg)
 	}
 }

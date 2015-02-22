@@ -1,0 +1,62 @@
+<div class="container">
+  <table class="table table-hover table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Size</th>
+        <th>Status</th>
+        <th>Progress</th>
+        <th>Seeds</th>
+        <th>Peers</th>
+        <th>Down</th>
+        <th>Up</th>
+        <th>
+          <div class="dropdown">
+            <button class="btn btn-small dropdown-toggle btn-danger" type="button" data-toggle="dropdown">
+              <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" role="menu">
+              <li role="presentation"><a role="menuitem" href="/pause-all">Pause All</a></li>
+              <li role="presentation"><a role="menuitem" href="/reume-all">Resume All</a></li>
+              <li class="divider">
+              <li role="presentation"><a role="menuitem" href="/remove-all">Remove All</a></li>
+            </ul>
+          </div>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      {{ range .TorrentStatuses }}
+      <tr>
+        <td>{{ .Name }}</td>
+        <td>{{ .Size }}</td>
+        <td>{{ .State }}</td>
+        <td>
+          <div class="progress">
+            <div class="progress-bar{{ if .IsDone }} progress-bar-success {{ end }}" role=" progressbar"
+                 style="width: {{ .Progress }}%;">
+              {{ .Progress }}%
+            </div>
+          </div>
+        </td>
+        <td>{{ .Seeds }}({{ .SeedsTotal }})</td>
+        <td>{{ .Peers }}({{ .PeersTotal }})</td>
+        <td>{{ .DownRate }}</td>
+        <td>{{ .UpRate }}</td>
+        <td>
+          <div class="dropdown">
+            <button class="btn btn-small dropdown-toggle" type="button" data-toggle="dropdown">
+              <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" role="menu">
+              <li role="presentation"><a role="menuitem" href="/pause?id={{.Hash}}">Pause</a></li>
+              <li role="presentation"><a role="menuitem" href="/resume?id={{.Hash}}">Resume</a></li>
+              <li role="presentation"><a role="menuitem" href="/remove?id={{.Hash}}">Remove</a></li>
+            </ul>
+          </div>
+        </td>
+      </tr>
+      {{ end }}
+    </tbody>
+  </table>
+</div>

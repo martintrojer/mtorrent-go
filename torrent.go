@@ -73,23 +73,24 @@ func ResumeTorrent(infoHash string) {
 	if (present) {
 		handle.Auto_managed(true)
 		handle.Resume()
-		log.Println("Torrent paused: " + infoHash)
+		log.Println("Torrent resumed: " + infoHash)
 	}
 }
 
 type TorrentStatus struct {
-	name string
-	hash string
-	size string
-	state string
-	progress float32
-	downRate string
-	upRate string
-	seeds int
-	seedsTotal int
-	peers int
-	peersTotal int
-	isPaused bool
+	Name string
+	Hash string
+	Size string
+	State string
+	Progress int
+	DownRate string
+	UpRate string
+	Seeds int
+	SeedsTotal int
+	Peers int
+	PeersTotal int
+	IsPaused bool
+	IsDone bool
 }
 
 func toHex(hash []byte)string {
@@ -122,21 +123,20 @@ func GetTorrentStatus() []TorrentStatus{
 		st := handlesVec.Get(i).Status()
 
 		var ts TorrentStatus
-		ts.name = st.GetName()
-		ts.hash = toHex([]byte(st.GetInfo_hash().To_string()))
-		ts.size = humanize.Bytes(uint64(st.GetTotal_wanted()))
-		ts.state = states[st.GetState()]
-		ts.progress = 100.0 * st.GetProgress()
-		ts.downRate = humanize.Bytes(uint64(st.GetDownload_rate()))
-		ts.upRate = humanize.Bytes(uint64(st.GetUpload_rate()))
-		ts.seeds = st.GetNum_seeds()
-		ts.seedsTotal = st.GetList_seeds()
-		ts.peers = st.GetNum_peers()
-		ts.peersTotal = st.GetList_peers()
-		ts.isPaused = st.GetPaused()
-
+		ts.Name = st.GetName()
+		ts.Hash = toHex([]byte(st.GetInfo_hash().To_string()))
+		ts.Size = humanize.Bytes(uint64(st.GetTotal_wanted()))
+		ts.State = states[st.GetState()]
+		ts.Progress = int(100.0 * st.GetProgress())
+		ts.DownRate = humanize.Bytes(uint64(st.GetDownload_rate()))
+		ts.UpRate = humanize.Bytes(uint64(st.GetUpload_rate()))
+		ts.Seeds = st.GetNum_seeds()
+		ts.SeedsTotal = st.GetList_seeds()
+		ts.Peers = st.GetNum_peers()
+		ts.PeersTotal = st.GetList_peers()
+		ts.IsPaused = st.GetPaused()
+		ts.IsDone = st.GetProgress() == 1.0
 		res[i] = ts
-
 	}
 
 	return res
