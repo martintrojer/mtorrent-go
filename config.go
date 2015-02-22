@@ -7,9 +7,7 @@ type Config struct {
 	Mtorrent struct {
 		UiPort int `gcfg:"ui-port"`
 		SavePath string `gcfg:"save-path"`
-		WatchPath string `gcfg:"watch-path"`
 		SessionFile string `gcfg:"session-file"`
-		LockFile string `gcfg:"lock-file"`
 	}
 	Torrent struct {
 		ListenPorts []int `gcfg:"listen"`

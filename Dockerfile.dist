@@ -1,0 +1,8 @@
+FROM debian:jessie
+
+ADD static static
+ADD templates templates
+ADD mtorrent.config mtorrent.config
+ADD mtorrent-go mtorrent-go
+
+CMD ./mtorrent-go
