@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"fmt"
+	"sort"
 	"net/http"
 	"html/template"
 )
@@ -21,7 +22,9 @@ var indexTemplates = template.Must(template.ParseFiles(
 	"templates/partials/add.html"))
 
 func indexHandler(w http.ResponseWriter, r *http.Request) {
-	err := indexTemplates.Execute(w, PageData{"mtorrent-go", GetTorrentStatus()})
+	st := GetTorrentStatus()
+	sort.Sort(ByName(st))
+	err := indexTemplates.Execute(w, PageData{"mtorrent-go", st})
 	if (err != nil) { log.Println("Template error: ", err) }
 }
 

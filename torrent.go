@@ -101,6 +101,11 @@ type TorrentStatus struct {
 	IsDone bool
 }
 
+type ByName []TorrentStatus
+func (a ByName) Len() int              { return len(a) }
+func (a ByName) Swap(i, j int)         { a[i], a[j] = a[j], a[i] }
+func (a ByName) Less(i, j int) bool    { return a[i].Name < a[j].Name }
+
 func toHex(hash []byte)string {
 	hexChars := []string {"0","1","2","3","4","5","6","7","8","9","a","b","c","d","e","f",}
 	res := ""
