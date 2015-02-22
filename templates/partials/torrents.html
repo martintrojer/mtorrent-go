@@ -17,7 +17,7 @@
             </button>
             <ul class="dropdown-menu" role="menu">
               <li role="presentation"><a role="menuitem" href="/pause-all">Pause All</a></li>
-              <li role="presentation"><a role="menuitem" href="/reume-all">Resume All</a></li>
+              <li role="presentation"><a role="menuitem" href="/resume-all">Resume All</a></li>
               <li class="divider">
               <li role="presentation"><a role="menuitem" href="/remove-all">Remove All</a></li>
             </ul>
@@ -30,7 +30,7 @@
       <tr>
         <td>{{ .Name }}</td>
         <td>{{ .Size }}</td>
-        <td>{{ .State }}</td>
+        <td>{{ if .IsPaused }}Paused{{ else }}{{ .State }}{{ end}}</td>
         <td>
           <div class="progress">
             <div class="progress-bar{{ if .IsDone }} progress-bar-success {{ end }}" role=" progressbar"

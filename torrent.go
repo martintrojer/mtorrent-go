@@ -50,15 +50,6 @@ func AddMagnet(uri string) {
 	log.Println("Magnet added: " + infoHash)
 }
 
-func RemoveTorrent(infoHash string) {
-	handle, present := instance.handles[infoHash]
-	if (present) {
-		instance.session.Remove_torrent(handle)
-		delete(instance.handles, infoHash)
-		log.Println("Torrent removed: " + infoHash)
-	}
-}
-
 func PauseTorrent(infoHash string) {
 	handle, present := instance.handles[infoHash]
 	if (present) {
@@ -76,6 +67,23 @@ func ResumeTorrent(infoHash string) {
 		log.Println("Torrent resumed: " + infoHash)
 	}
 }
+
+func RemoveTorrent(infoHash string) {
+	handle, present := instance.handles[infoHash]
+	if (present) {
+		instance.session.Remove_torrent(handle)
+		delete(instance.handles, infoHash)
+		log.Println("Torrent removed: " + infoHash)
+	}
+}
+
+func iterTorrents(fn func(string)) {
+	for hash, _ := range instance.handles { fn(hash) }
+}
+
+func PauseAllTorrents() { iterTorrents(PauseTorrent) }
+func ResumeAllTorrents() { iterTorrents(ResumeTorrent) }
+func RemoveAllTorrents() { iterTorrents(RemoveTorrent) }
 
 type TorrentStatus struct {
 	Name string
@@ -109,14 +117,14 @@ func GetTorrentStatus() []TorrentStatus{
 	res := make([]TorrentStatus, vecSize)
 
 	states := []string {
-		"queued for checking",
-		"checking files",
-		"downloading metadata",
-		"downloading",
-		"finished",
-		"seeding",
-		"allocating",
-		"checking resume data",
+		"Queued for checking",
+		"Checking files",
+		"Downloading metadata",
+		"Downloading",
+		"Finished",
+		"Seeding",
+		"Allocating",
+		"Checking resume data",
 	}
 
 	for i := 0; i < vecSize; i++ {
