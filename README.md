@@ -6,26 +6,21 @@ Uber-hipster version of [mtorrent-node](https://github.com/martintrojer/mtorrent
 
 Make sure you have Docker (>=1.5.0) installed (and perhaps [boot2docker](http://boot2docker.io)).
 
-### Building the binary
+### Build the distribution container
+
+`$ make dist`
+
+You might want to edit the `mtorrent.config` file before building the distribution container. That file contains settings and is hopefully self explanatory.
+
+### Building the dev environment
 
 First build the development environment;
 
-`$ ./build-dev.sh`
+`$ make dev`
 
-Then build the mtorrent binary;
+Then you can connect and hack away
 
-```
-$ ./connect-dev.sh
-$ go build
-```
-
-### Build the distribution container
-
-`$ ./build-dist.sh`
-
-## Configuration
-
-You might want to edit the `mtorrent.config` file before building the distribution container. That file contains settings and is hopefully self explanatory.
+`$ make connect`
 
 ## Running
 
